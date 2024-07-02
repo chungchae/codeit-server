@@ -68,7 +68,7 @@ app.patch("/tasks/:id", (req, res) => {
 });
 
 app.delete("/tasks/:id", (req, res) => {
-  //params로 전달됨
+  //params로 전달됨!
   const id = Number(req.params.id);
   const idx = tasks.findIndex((task) => task.id === id);
   if (idx >= 0) {
@@ -77,7 +77,7 @@ app.delete("/tasks/:id", (req, res) => {
   } else {
     res.status(404).send({ message: "Cannot find given id." });
   }
-});
+})
 
 
 
