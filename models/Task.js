@@ -5,6 +5,14 @@ const TaskSchema = new mongoose.Schema(
   {
     title: {
       type: String,
+      required: true,
+      maxLength: 30,
+      validate: {
+        validator: function (title) {
+          return title.split(" ").length > 1;
+        },
+        message: "Must contain at least 2 words",
+      },
     },
     description: {
       type: String,
@@ -12,14 +20,15 @@ const TaskSchema = new mongoose.Schema(
     isComplete: {
       type: Boolean,
       default: false,
+      required: true,
     },
   },
   {
-    timestamps: true
+    timestamps: true,
   }
-)
+);
 
 //mongoDB 에서 다룰 컬렉션 이름. Task라는 이름의 컬렉션에 각종 기능을 수행
-const Task = mongoose.model('Task', TaskSchema);
+const Task = mongoose.model("Task", TaskSchema);
 
 export default Task;
