@@ -1,0 +1,32 @@
+GET http://localhost:3000/hello
+
+
+###
+//쿼리 스트링: ?뒤에 오는 내용을 말함
+GET http://localhost:3000/tasks?sort=oldest&count=3
+
+###
+//dynamic URL
+GET http://localhost:3000/tasks/1
+
+###
+//POST Request
+POST http://localhost:3000/tasks
+Content-Type: application/json
+
+{
+  "title": "강아지 산책",
+  "description": "강아지와 30분 산책하기"
+}
+
+###
+PATCH  http://localhost:3000/tasks/1
+Content-Type: application/json
+
+{
+  "isComplete": true
+}
+
+###
+//delete는 body가 필요 없음
+DELETE  http://localhost:3000/tasks/1
