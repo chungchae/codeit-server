@@ -2,13 +2,15 @@ import express from "express";
 import mongoose from "mongoose";
 import { DATABASE_URL } from "./env.js";
 import Task from "./models/Task.js";
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 const app = express();
 //app 변수를 통해 라우트 생성 가능
 app.use(express.json());
 
 //MongoDB 연결
-mongoose.connect(DATABASE_URL).then(() => console.log("Connected to DB"));
+mongoose.connect(process.env.DATABASE_URL).then(() => console.log('Connected to DB'));
 
 //e함수를 받아 핸들러 처리
 function asyncHandler(handler) {
@@ -110,4 +112,4 @@ app.delete(
 //3000: 포트 번호, 프로세스 구분을 위한 것
 //앱이 실행되면 두번째 함수가 실행됨
 //terminal에 node app.js 작성하면 실행됨
-app.listen(3000, () => console.log("Server Started"));
+app.listen(process.env.PORT || 3000, () => console.log('Server Started'));
