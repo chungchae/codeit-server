@@ -3,10 +3,15 @@ import mongoose from "mongoose";
 import { DATABASE_URL } from "./env.js";
 import Task from "./models/Task.js";
 import * as dotenv from 'dotenv';
+import cors from 'cors';
+
 dotenv.config();
 
 const app = express();
 //app 변수를 통해 라우트 생성 가능
+app.use(express.json());
+
+app.use(cors());
 app.use(express.json());
 
 //MongoDB 연결
