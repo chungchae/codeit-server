@@ -11,13 +11,21 @@ GET http://localhost:3000/tasks/6683ee8da681c246201d31a1
 
 ###
 //POST Request
-POST http://localhost:3000/tasks
+POST http://localhost:3000/api/groups
 Content-Type: application/json
 
 {
-  "title": "강아지 산책",
-  "description": "강아지와 30분 산책하기"
+  "name": "테스트그룹1",
+  "password": "123",
+  "isPublic": true,
+  "imageUrl": "image.pdf",
+  "introduction": "소개글1"
 }
+
+###
+//GET
+GET http://localhost:3000/api/groups
+
 
 ###
 PATCH  http://localhost:3000/tasks/1
