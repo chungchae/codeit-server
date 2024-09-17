@@ -1,6 +1,9 @@
 import express from "express";
 import Group from "../models/Group.js";
+import Post from "../models/Post.js";
 import asyncHandler from "../utils/asynchandler.js";
+import bcrypt from 'bcrypt';
+
 
 const router = express.Router();
 
@@ -196,5 +199,93 @@ router.post("/:groupId/verify-password", asyncHandler(async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 }));
+
+// POST: 게시글 등록
+router.post("/:groupId/posts", async (req, res) => {
+  const { groupId } = req.params;
+  const { nickname, title, content, postPassword, groupPassword, imageUrl, tags, location, moment, isPublic } = req.body;
+
+  try {
+    // 그룹 존재 확인
+    const group = await Group.findById(groupId);
+    if (!group) {
+      return res.status(404).json({ message: "Group not found." });
+    }
+
+    // 그룹 비밀번호 검증
+    if (groupPassword !== group.password) {
+      return res.status(403).json({ message: "Invalid group password." });
+    }
+
+    // 게시글 생성
+    const newPost = new Post({
+      groupId,
+      nickname,
+      title,
+      content,
+      imageUrl,
+      tags,
+      location,
+      moment,
+      isPublic,
+      password: postPassword,
+    });
+
+    const savedPost = await newPost.save();
+
+    res.status(201).json({
+      message: "Post created successfully",
+      post: savedPost,
+    });
+  } catch (error) {
+    console.error("Error creating post:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+//GET: 게시글 목록 조회
+router.get("/:groupId/posts", async (req, res) => {
+  const { groupId } = req.params;
+  const { page = 1, limit = 10 } = req.query; // 페이지와 한 페이지당 항목 수
+
+  try {
+    // 그룹 존재 확인
+    const group = await Group.findById(groupId);
+    if (!group) {
+      return res.status(404).json({ message: "Group not found." });
+    }
+
+    // 게시글 목록 조회
+    const totalItemCount = await Post.countDocuments({ groupId });
+    const totalPages = Math.ceil(totalItemCount / limit);
+
+    const posts = await Post.find({ groupId })
+      .skip((page - 1) * limit) // 페이지네이션
+      .limit(Number(limit))
+      .sort({ createdAt: -1 }); // 최신 게시글 순으로 정렬
+
+    res.status(200).json({
+      currentPage: Number(page),
+      totalPages,
+      totalItemCount,
+      data: posts.map(post => ({
+        id: post._id,
+        nickname: post.nickname,
+        title: post.title,
+        imageUrl: post.imageUrl,
+        tags: post.tags,
+        location: post.location,
+        moment: post.memoryMoment,
+        isPublic: post.isPublic,
+        likeCount: post.empathyCount,
+        commentCount: post.commentCount,
+        createdAt: post.createdAt,
+      })),
+    });
+  } catch (error) {
+    console.error("Error fetching posts:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
 
 export default router;

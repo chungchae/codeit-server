@@ -18,14 +18,13 @@ const PostSchema = new mongoose.Schema(
       required: true,
       maxLength: 100,
     },
-    image: {
-      type: String, // 이미지 URL을 저장하는 필드
-      required: true,
-    },
     content: {
       type: String,
       required: true,
       maxLength: 1000, // 본문 최대 길이 제한
+    },
+    imageUrl: {
+      type: String, // 이미지 URL을 저장하는 필드
     },
     tags: {
       type: [String], // 태그는 배열 형태로 저장
@@ -34,7 +33,7 @@ const PostSchema = new mongoose.Schema(
       type: String, // 장소
       maxLength: 100,
     },
-    memoryMoment: {
+    moment: {
       type: Date, // 추억의 순간을 저장
       required: true,
     },
@@ -43,13 +42,9 @@ const PostSchema = new mongoose.Schema(
       default: false, // 공개 여부
       required: true,
     },
-    password: {
-      type: String, // 비밀번호
-      required: true,
-    },
-    empathyCount: {
+    likeCount: {
       type: Number,
-      default: 0, // 공감 수
+      default: 0, // 좋아요 수
     },
     commentCount: {
       type: Number,
@@ -57,13 +52,13 @@ const PostSchema = new mongoose.Schema(
     },
   },
   {
-    timestamps: true,
+    timestamps: true, // 생성 및 업데이트 타임스탬프를 자동으로 추가
   }
 );
 
-// 공감 보내기 함수
-PostSchema.methods.addEmpathy = function () {
-  this.empathyCount += 1;
+// 공감(좋아요) 추가 함수
+PostSchema.methods.addLike = function () {
+  this.likeCount += 1;
   return this.save();
 };
 
