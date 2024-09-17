@@ -1,22 +1,22 @@
 import mongoose from "mongoose";
 
-// 공감 스키마
-const EmpathySchema = new mongoose.Schema(
+// 좋아요(Like) 스키마
+const LikeSchema = new mongoose.Schema(
   {
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
-      ref: "User", // 공감을 보낸 사용자
+      ref: "User", // 좋아요를 누른 사용자
     },
     targetId: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
-      refPath: "onModel", // 공감을 받는 대상
+      refPath: "onModel", // 좋아요를 받는 대상
     },
     onModel: {
       type: String,
       required: true,
-      enum: ["Group", "Post"], // 공감 대상이 그룹인지 게시글인지 구분
+      enum: ["Group", "Post"], // 좋아요 대상이 그룹인지 게시글인지 구분
     },
     createdAt: {
       type: Date,
@@ -25,6 +25,6 @@ const EmpathySchema = new mongoose.Schema(
   }
 );
 
-const Empathy = mongoose.model("Empathy", EmpathySchema);
+const Like = mongoose.model("Like", LikeSchema);
 
-export default Empathy;
+export default Like;

@@ -9,13 +9,15 @@ GET http://localhost:3000/tasks?sort=oldest&count=3
 //dynamic URL
 GET http://localhost:3000/tasks/6683ee8da681c246201d31a1
 
+
+//Group api
 ###
-//POST Request
+//POST: 새로운 그룹 등록
 POST http://localhost:3000/api/groups
 Content-Type: application/json
 
 {
-  "name": "테스트그룹1",
+  "name": "테스트그룹2",
   "password": "123",
   "isPublic": true,
   "imageUrl": "image.pdf",
@@ -23,8 +25,67 @@ Content-Type: application/json
 }
 
 ###
-//GET
+//GET: 기존 그룹 조회
 GET http://localhost:3000/api/groups
+
+//PUT: 기존 그룹 수정
+###
+PUT http://localhost:3000/api/groups/66e56dccefc72088053d0255
+Content-Type: application/json
+
+{
+  "name": "새로운 그룹 이름",
+  "password": "새로운 비밀번호",
+  "imageUrl": "새로운 이미지 URL",
+  "isPublic": true,
+  "introduction": "새로운 소개"
+}
+
+###
+DELETE http://localhost:3000/api/groups/66e95239e754f571b5d0b2f4
+
+
+###
+//GET: 기존 그룹 조회
+GET http://localhost:3000/api/groups/66e56dccefc72088053d0255
+
+
+###
+//POST: 그룹 비밀번호 검증
+POST http://localhost:3000/api/groups/66e56dccefc72088053d0255/verify-password
+Content-Type: application/json
+
+{
+  "password": "새로운 비밀번호"
+}
+
+
+//User api
+
+### POST: 회원가입
+POST http://localhost:3000/api/user/signup
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "email": "testuser@example.com",
+  "password": "password123"
+}
+
+### POST: 로그인
+POST http://localhost:3000/api/user/login
+Content-Type: application/json
+
+{
+  "email": "testuser@example.com",
+  "password": "password123"
+}
+
+### POST: 로그아웃
+POST http://localhost:3000/api/user/logout
+Content-Type: application/json
+
+{}
 
 
 ###

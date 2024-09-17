@@ -69,4 +69,132 @@ router.get("/", asyncHandler(async (req, res) => {
   });
 }));
 
+// PUT: 그룹 정보 수정
+router.put("/:groupId", asyncHandler(async (req, res) => {
+  const { groupId } = req.params;
+  const { name, password, imageUrl, isPublic, introduction } = req.body;
+
+  if (!name || !password) {
+    return res.status(400).json({ message: "그룹 이름과 패스워드가 필요합니다." });
+  }
+
+  try {
+    // groupId로 해당 그룹을 찾고 수정
+    const updatedGroup = await Group.findByIdAndUpdate(
+      groupId,  // 대상 그룹 ID
+      { name, password, imageUrl, isPublic, introduction }, //수정할 필드
+      { new: true, runValidators: true }
+    );
+
+    // 그룹이 존재하지 않을 경우
+    if (!updatedGroup) {
+      return res.status(404).json({ message: "그룹을 찾을 수 없습니다." });
+    }
+
+    // 업데이트된 그룹 반환
+    res.json({
+      message: "그룹 정보가 업데이트 되었습니다.",
+      group: {
+        id: updatedGroup._id,
+        name: updatedGroup.name,
+        imageUrl: updatedGroup.imageUrl,
+        isPublic: updatedGroup.isPublic,
+        introduction: updatedGroup.introduction,
+        likeCount: updatedGroup.likeCount || 0,
+        badgeCount: updatedGroup.badgeCount || 0,
+        postCount: updatedGroup.postCount || 0,
+        createdAt: updatedGroup.createdAt,
+      },
+    });
+  } catch (error) {
+    console.error("오류가 발생했습니다.", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+}));
+
+// DELETE: 그룹 삭제
+router.delete("/:groupId", asyncHandler(async (req, res) => {
+  const { groupId } = req.params;
+
+  try {
+    // groupId로 해당 그룹을 찾고 삭제
+    const deletedGroup = await Group.findByIdAndDelete(groupId);
+
+    // 그룹이 존재하지 않을 경우
+    if (!deletedGroup) {
+      return res.status(404).json({ message: "그룹을 찾을 수 없습니다." });
+    }
+
+    // 성공적으로 삭제된 경우 응답
+    res.json({ message: "그룹 삭제 성공" });
+  } catch (error) {
+    console.error("그룹 삭제 중 오류가 발생했습니다.", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+}));
+
+// GET: 그룹 상세 정보 조회
+router.get("/:groupId", asyncHandler(async (req, res) => {
+  const { groupId } = req.params;
+
+  try {
+    // groupId로 그룹을 찾음
+    const group = await Group.findById(groupId);
+
+    // 그룹이 존재하지 않을 경우
+    if (!group) {
+      return res.status(404).json({ message: "그룹을 찾을 수 없습니다." });
+    }
+
+    // 응답 데이터 구성
+    res.json({
+      id: group._id,
+      name: group.name,
+      imageUrl: group.imageUrl,
+      isPublic: group.isPublic,
+      likeCount: group.likeCount || 0,
+      badges: group.badges || [],
+      postCount: group.postCount || 0,
+      createdAt: group.createdAt,
+      introduction: group.introduction
+    });
+  } catch (error) {
+    console.error("그룹 상세 조회 중 오류가 발생했습니다.", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+}));
+
+// POST: 그룹 비밀번호 검증
+router.post("/:groupId/verify-password", asyncHandler(async (req, res) => {
+  const { groupId } = req.params;
+  const { password } = req.body;
+
+  if (!password) {
+    return res.status(400).json({ message: "비밀번호가 필요합니다." });
+  }
+
+  try {
+    // groupId로 그룹을 찾음
+    const group = await Group.findById(groupId);
+
+    // 그룹이 존재하지 않을 경우
+    if (!group) {
+      return res.status(404).json({ message: "그룹을 찾을 수 없습니다." });
+    }
+
+    // 비밀번호 검증
+    const isPasswordValid = group.password === password;
+
+    // 비밀번호가 맞는지 여부에 따라 응답
+    if (isPasswordValid) {
+      res.json({ message: "비밀번호가 일치합니다." });
+    } else {
+      res.status(401).json({ message: "비밀번호가 일치하지 않습니다." });
+    }
+  } catch (error) {
+    console.error("비밀번호 검증 중 오류가 발생했습니다.", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+}));
+
 export default router;
