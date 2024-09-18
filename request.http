@@ -95,8 +95,8 @@ Content-Type: application/json
 
 {
   "nickname": "testuser",
-  "title": "Test Post Title",
-  "content": "This is the content of the test post.",
+  "title": "게시글 2",
+  "content": "내용 2",
   "postPassword": "123",
   "groupPassword": "123",
   "imageUrl": "http://example.com/image.jpg",
@@ -124,3 +124,16 @@ Content-Type: application/json
   "moment": "2024-02-21",
   "isPublic": true
 }
+
+### DELETE: 게시글 삭제
+DELETE http://localhost:3000/api/posts/66ea3bf9b7cf9050f9562203
+Content-Type: application/json
+
+{
+  "postPassword": "123"
+}
+
+### GET: 게시글 상세 정보 조회
+GET http://localhost:3000/api/posts/66ea3e9f577baaf1ab0db45f
+Content-Type: application/json
+

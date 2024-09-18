@@ -44,4 +44,67 @@ router.put("/:postId", async (req, res) => {
   }
 });
 
+// DELETE: 게시글 삭제
+router.delete("/:postId", async (req, res) => {
+  const { postId } = req.params;
+  const { postPassword } = req.body;
+
+  try {
+    // 게시글 존재 확인
+    const post = await Post.findById(postId);
+    if (!post) {
+      return res.status(404).json({ message: "Post not found." });
+    }
+
+    // 게시글 비밀번호 검증
+    if (post.password !== postPassword) {
+      return res.status(403).json({ message: "Invalid post password." });
+    }
+
+    // 게시글 삭제
+    await Post.findByIdAndDelete(postId);
+
+    res.status(200).json({
+      message: "Post deleted successfully.",
+    });
+  } catch (error) {
+    console.error("Error deleting post:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+// GET: 게시글 상세 정보 조회
+router.get("/:postId", async (req, res) => {
+  const { postId } = req.params;
+
+  try {
+    // 게시글 존재 확인 및 조회
+    const post = await Post.findById(postId);
+    if (!post) {
+      return res.status(404).json({ message: "Post not found." });
+    }
+
+    // 응답에 게시글 정보 반환
+    res.status(200).json({
+      id: post._id,
+      groupId: post.groupId,
+      nickname: post.nickname,
+      title: post.title,
+      content: post.content,
+      imageUrl: post.imageUrl,
+      tags: post.tags,
+      location: post.location,
+      moment: post.moment,
+      isPublic: post.isPublic,
+      likeCount: post.likeCount,
+      commentCount: post.commentCount,
+      createdAt: post.createdAt,
+    });
+  } catch (error) {
+    console.error("Error retrieving post details:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+
 export default router;
