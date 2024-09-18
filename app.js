@@ -6,6 +6,7 @@ import cors from 'cors';
 import groupRoutes from "./controller/groupController.js"
 import userRoutes from "./controller/userController.js"
 import postRoutes from "./controller/postController.js"
+import commentRoutes from "./controller/commentController.js"
 
 dotenv.config();
 
@@ -26,6 +27,9 @@ app.use("/api/user", userRoutes);
 
 //post 처리 api
 app.use("/api/posts", postRoutes);
+
+//comment 처리 api
+app.use("/api/comments", commentRoutes);
 
 //3000: 포트 번호, 프로세스 구분을 위한 것
 //앱이 실행되면 두번째 함수가 실행됨

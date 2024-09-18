@@ -160,3 +160,13 @@ Content-Type: application/json
 
 ### GET: 게시글 댓글 목록 조회
 GET http://localhost:3000/api/posts/66ea3e9f577baaf1ab0db45f/comments?page=1&limit=10
+
+### PUT: 댓글 수정
+PUT http://localhost:3000/api/comments/66ea6b75318ae3759d65ba95
+Content-Type: application/json
+
+{
+  "nickname": "testuser",
+  "content": "Updated content of the comment.",
+  "password": "123"
+}
