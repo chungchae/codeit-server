@@ -2,8 +2,8 @@ import express from "express";
 import Group from "../models/Group.js";
 import Post from "../models/Post.js";
 import asyncHandler from "../utils/asynchandler.js";
-import bcrypt from 'bcrypt';
-
+import authenticateToken from "../utils/authenticateToken.js";
+import Like from "../models/Like.js";
 
 const router = express.Router();
 
@@ -199,6 +199,61 @@ router.post("/:groupId/verify-password", asyncHandler(async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 }));
+
+// POST: 그룹 좋아요
+router.post('/:groupId/like', authenticateToken, async (req, res) => {
+  const { groupId } = req.params;
+  const userId = req.user._id; // 현재 로그인된 사용자 ID
+
+  try {
+    // 그룹 존재 확인
+    const group = await Group.findById(groupId);
+    if (!group) {
+      return res.status(404).json({ message: 'Group not found.' });
+    }
+
+    // 이미 공감한 사용자인지 확인
+    const existingLike = await Like.findOne({ userId, targetId: groupId, onModel: 'Group' });
+    if (existingLike) {
+      return res.status(400).json({ message: 'User has already liked this group.' });
+    }
+
+    // 좋아요 생성
+    const newLike = new Like({ userId, targetId: groupId, onModel: 'Group' });
+    await newLike.save();
+
+    // 그룹의 좋아요 수 업데이트
+    group.likeCount += 1;
+    await group.save();
+
+    res.status(201).json({ message: 'Group liked successfully.' });
+  } catch (error) {
+    console.error('Error liking group:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+
+// GET: 그룹의 공개 여부 확인
+router.get('/:groupId/is-public', async (req, res) => {
+  const { groupId } = req.params;
+
+  try {
+    // 그룹 존재 확인
+    const group = await Group.findById(groupId);
+    if (!group) {
+      return res.status(404).json({ message: "Group not found." });
+    }
+
+    // 응답 반환
+    res.status(200).json({
+      id: group._id,
+      isPublic: group.isPublic,
+    });
+  } catch (error) {
+    console.error("Error retrieving group public status:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
 
 // POST: 게시글 등록
 router.post("/:groupId/posts", async (req, res) => {

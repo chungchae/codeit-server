@@ -178,3 +178,11 @@ Content-Type: application/json
 {
   "password": "123"
 }
+
+### GET: 그룹 공개 여부 확인
+GET http://localhost:3000/api/groups/66e56dccefc72088053d0255/is-public
+
+
+### POST: 그룹 좋아요
+POST http://localhost:3000/api/groups/66e56dccefc72088053d0255/like
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmU5NmM5ZjczZThhZmE3OWJlMTEwZDAiLCJpYXQiOjE3MjY2NDExNTUsImV4cCI6MTcyNjY0NDc1NX0.NSQPJ54RS5hKl1uyG01C9mghTIpF7nY9R3tqcG9-C1o
