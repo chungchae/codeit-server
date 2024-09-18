@@ -189,5 +189,47 @@ router.post("/:postId/comments", async (req, res) => {
   }
 });
 
+// GET: 특정 게시글의 댓글 목록 조회
+router.get("/:postId/comments", async (req, res) => {
+  const { postId } = req.params;
+  const { page = 1, limit = 10 } = req.query; // 기본 페이지와 한 페이지당 항목 수 설정
+
+  try {
+    // 게시글 존재 확인
+    const post = await Post.findById(postId);
+    if (!post) {
+      return res.status(404).json({ message: "Post not found." });
+    }
+
+    // 댓글 목록 가져오기 및 페이징 처리
+    const comments = await Comment.find({ postId })
+      .sort({ createdAt: -1 }) // 최신 댓글 순으로 정렬
+      .skip((page - 1) * limit) // 페이지 건너뛰기
+      .limit(Number(limit)); // 한 페이지당 항목 수 제한
+
+    // 전체 댓글 수
+    const totalItemCount = await Comment.countDocuments({ postId });
+    const totalPages = Math.ceil(totalItemCount / limit);
+
+    // 응답 데이터 생성
+    const responseData = {
+      currentPage: Number(page),
+      totalPages,
+      totalItemCount,
+      data: comments.map(comment => ({
+        id: comment._id,
+        nickname: comment.nickname,
+        content: comment.content,
+        createdAt: comment.createdAt,
+      })),
+    };
+
+    res.status(200).json(responseData);
+  } catch (error) {
+    console.error("Error fetching comments:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
 
 export default router;
