@@ -106,5 +106,30 @@ router.get("/:postId", async (req, res) => {
   }
 });
 
+// POST: 게시글 비밀번호 검증
+router.post("/:postId/verify-password", async (req, res) => {
+  const { postId } = req.params;
+  const { password } = req.body;
+
+  try {
+    // 게시글 존재 확인
+    const post = await Post.findById(postId);
+    if (!post) {
+      return res.status(404).json({ message: "Post not found." });
+    }
+
+    // 비밀번호 검증
+    if (post.password !== password) {
+      return res.status(403).json({ message: "Invalid post password." });
+    }
+
+    // 비밀번호가 맞을 경우 성공 응답
+    res.status(200).json({ message: "Password verified successfully." });
+  } catch (error) {
+    console.error("Error verifying post password:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
 
 export default router;

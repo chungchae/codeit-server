@@ -137,3 +137,10 @@ Content-Type: application/json
 GET http://localhost:3000/api/posts/66ea3e9f577baaf1ab0db45f
 Content-Type: application/json
 
+### POST: 게시글 비밀번호 검증
+POST http://localhost:3000/api/posts/66ea3e9f577baaf1ab0db45f/verify-password
+Content-Type: application/json
+
+{
+	"password": "123"
+}
