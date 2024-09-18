@@ -144,3 +144,16 @@ Content-Type: application/json
 {
 	"password": "123"
 }
+
+### GET: 게시글 공개 여부 확인
+GET http://localhost:3000/api/posts/66ea3e9f577baaf1ab0db45f/is-public
+
+### POST: 게시글에 댓글 등록
+POST http://localhost:3000/api/posts/66ea3e9f577baaf1ab0db45f/comments
+Content-Type: application/json
+
+{
+  "nickname": "testuser",
+  "content": "This is a test comment.",
+  "password": "123"
+}

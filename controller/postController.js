@@ -2,6 +2,7 @@ import express from 'express';
 import Post from '../models/Post.js';
 import Group from '../models/Group.js';
 import bcrypt from 'bcrypt';
+import Comment from '../models/Comment.js';
 
 const router = express.Router();
 
@@ -127,6 +128,63 @@ router.post("/:postId/verify-password", async (req, res) => {
     res.status(200).json({ message: "Password verified successfully." });
   } catch (error) {
     console.error("Error verifying post password:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+// GET: 게시글 공개 여부 확인
+router.get("/:postId/is-public", async (req, res) => {
+  const { postId } = req.params;
+
+  try {
+    // 게시글 존재 확인
+    const post = await Post.findById(postId);
+    if (!post) {
+      return res.status(404).json({ message: "Post not found." });
+    }
+
+    // 공개 여부 반환
+    res.status(200).json({
+      id: post._id,
+      isPublic: post.isPublic,
+    });
+  } catch (error) {
+    console.error("Error fetching post visibility status:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+// POST: 댓글 등록
+router.post("/:postId/comments", async (req, res) => {
+  const { postId } = req.params;
+  const { nickname, content, password } = req.body;
+
+  try {
+    // 게시글 존재 확인
+    const post = await Post.findById(postId);
+    if (!post) {
+      return res.status(404).json({ message: "Post not found." });
+    }
+
+    // 새로운 댓글 생성
+    const newComment = new Comment({
+      postId,
+      nickname,
+      content,
+      password,
+    });
+
+    const savedComment = await newComment.save();
+
+    // 성공적으로 등록된 댓글 응답
+    res.status(201).json({
+      id: savedComment._id,
+      nickname: savedComment.nickname,
+      content: savedComment.content,
+      createdAt: savedComment.createdAt,
+    });
+  } catch (error) {
+    console.error("Error adding comment:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
