@@ -25,7 +25,7 @@ app.use("/api/groups", groupRoutes);
 app.use("/api/user", userRoutes);
 
 //post 처리 api
-app.use("/api/post", postRoutes);
+app.use("/api/posts", postRoutes);
 
 //3000: 포트 번호, 프로세스 구분을 위한 것
 //앱이 실행되면 두번째 함수가 실행됨

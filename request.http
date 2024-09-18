@@ -108,3 +108,19 @@ Content-Type: application/json
 
 ### GET: 게시글 목록 조회
 GET http://localhost:3000/api/groups/66e9750617856a39e2a3310b/posts
+
+### PUT: 게시글 수정 테스트
+PUT http://localhost:3000/api/posts/66ea372b65fdf41c280653af
+Content-Type: application/json
+
+{
+  "nickname": "updated nickname",
+  "title": "updated title",
+  "content": "updated content",
+  "postPassword": "123",
+  "imageUrl": "https://example.com/updated-image.jpg",
+  "tags": ["tag1", "tag2"],
+  "location": "updated location",
+  "moment": "2024-02-21",
+  "isPublic": true
+}

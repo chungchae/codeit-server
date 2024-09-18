@@ -24,7 +24,7 @@ const PostSchema = new mongoose.Schema(
       maxLength: 1000, // 본문 최대 길이 제한
     },
     imageUrl: {
-      type: String, // 이미지 URL을 저장하는 필드
+      type: String, // 이미지 URL
     },
     tags: {
       type: [String], // 태그는 배열 형태로 저장
@@ -34,7 +34,7 @@ const PostSchema = new mongoose.Schema(
       maxLength: 100,
     },
     moment: {
-      type: Date, // 추억의 순간을 저장
+      type: Date, // 추억의 순간
       required: true,
     },
     isPublic: {
@@ -50,11 +50,16 @@ const PostSchema = new mongoose.Schema(
       type: Number,
       default: 0, // 댓글 수
     },
+    password: {
+      type: String, // 게시글 비밀번호
+      required: true,
+    },
   },
   {
-    timestamps: true, // 생성 및 업데이트 타임스탬프를 자동으로 추가
+    timestamps: true, // 생성 및 업데이트 타임스탬프 자동 추가
   }
 );
+
 
 // 공감(좋아요) 추가 함수
 PostSchema.methods.addLike = function () {
