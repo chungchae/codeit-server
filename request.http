@@ -154,7 +154,7 @@ Content-Type: application/json
 
 {
   "nickname": "testuser",
-  "content": "This is a test comment.",
+  "content": "댓글2",
   "password": "123"
 }
 
@@ -168,5 +168,13 @@ Content-Type: application/json
 {
   "nickname": "testuser",
   "content": "Updated content of the comment.",
+  "password": "123"
+}
+
+### DELETE: 댓글 삭제
+DELETE http://localhost:3000/api/comments/66ea6b75318ae3759d65ba95
+Content-Type: application/json
+
+{
   "password": "123"
 }
